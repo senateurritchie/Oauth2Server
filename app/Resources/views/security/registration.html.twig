@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+
+{% form_theme form "bootstrap_4_layout.html.twig" %}
+
+{% block body %}
+
+	<div class="container">
+
+		<div class="row justify-content-center align-items-center">
+
+			<div class="col-md-4 col-lg-4 col-xl-4">
+
+				<div class="card">
+					
+					<div class="card-body">
+						<div class="card-title">
+							Formulaire d'enregistrement
+						</div>
+				    	{{ form_start(form) }}
+				    	{{ form_widget(form) }}
+				    	{{ form_end(form) }}
+				  	</div>
+				</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+   
+    
+{% endblock %}

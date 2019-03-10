@@ -1,0 +1,120 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ApiUserAccessTokenScope
+ *
+ * @ORM\Table(name="api_user_access_token_scope")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ApiUserAccessTokenScopeRepository")
+ */
+class ApiUserAccessTokenScope
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+    * @var AppBundle\Entity\User
+    *
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ApiUserAccessToken")
+    * @ORM\JoinColumn(nullable=false, onDelete="cascade")
+    */
+    private $token;
+    /**
+    * @var AppBundle\Entity\AppAccessScope
+    *
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AppAccessScope")
+    * @ORM\JoinColumn(nullable=false, onDelete="cascade")
+    */
+    private $scope;
+    /**
+    * @var \Datetime
+    *
+    * @ORM\Column(name="date", type="datetime", nullable=false)
+    */
+    private $date;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId(){
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param \AppBundle\Entity\ApiUserAccessToken $token
+     *
+     * @return AppAccessTokenScope
+     */
+    public function setToken(\AppBundle\Entity\ApiUserAccessToken $token){
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return \AppBundle\Entity\ApiUserAccessToken
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set scope
+     *
+     * @param \AppBundle\Entity\AppAccessScope $scope
+     *
+     * @return ApiUserAccessTokenScope
+     */
+    public function setScope(\AppBundle\Entity\AppAccessScope $scope){
+        $this->scope = $scope;
+        return $this;
+    }
+
+    /**
+     * Get scope
+     *
+     * @return \AppBundle\Entity\AppAccessScope
+     */
+    public function getScope() {
+        return $this->scope;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return ApiUserAccessTokenScope
+     */
+    public function setDate($date){
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate(){
+        return $this->date;
+    }
+}

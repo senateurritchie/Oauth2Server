@@ -1,0 +1,34 @@
+<script>
+
+
+	
+    function getParameters(name) {
+    	var ev = {};
+        var reg = /((?:.+?)=(?:.+?))/;
+        var text = decodeURIComponent( window.location.href);
+        text = text.substr(text.indexOf("#")+1);
+        var data = text.split("&");
+        for (var i = 0; i < data.length; i++) {
+            var e = data[i].split("=");
+            ev[e[0].trim()] = e[1].replace(/\+/g, ' ');
+        }
+
+       /* var reg = /(?:(?:([\w]*)=([\w _\.:\/%-]*))+?)/ig;
+        decodeURIComponent(window.location.href).replace(reg,function(p,key,value){
+        	ev[key.trim()]=value.replace(/\+/g, ' ');
+        });*/
+
+        return name?ev[name]:ev;
+    };
+
+
+    window.onload = function(){
+    	let params = getParameters();
+        let redirect_uri = params.redirect_uri;
+        delete params.redirect_uri;
+    	let l = window.opener.self.location;
+    	window.opener.postMessage(params,redirect_uri);
+		window.close();
+    	
+    }
+</script>

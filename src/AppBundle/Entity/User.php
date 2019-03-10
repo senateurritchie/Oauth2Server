@@ -1,0 +1,278 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+
+
+/**
+ * User
+ *
+ * @ORM\Table(name="user")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Cet email existe deja")
+ * @UniqueEntity(fields="username", message="Ce nom d'utilisateur existe deja")
+ */
+class User implements UserInterface, \Serializable,EquatableInterface{
+
+    const DEFAULT_ROLE = "ROLE_USER";
+    const ROLE_ADMIN = "ROLE_ADMIN";
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+    * @var string
+    * 
+    * @Assert\NotBlank(message="le nom d'utilisateur ne peut être vide")
+    * @Assert\Length(min=4, max=30, minMessage="la longueur minimum est de 4 caractères", maxMessage="la longueur maximum est de 30 caractères")
+    * @ORM\Column(name="username", type="string", length=30, unique=true, nullable=false)
+    */
+    private $username;
+
+    /**
+     * @var string
+     *
+     * @Assert\NotBlank(message="veuillez saisir le mot de passe")
+     * @Assert\Length(min=8, minMessage="la longueur minimum est de 8 caractères")
+     * @ORM\Column(name="password", type="string", length=64, nullable=false)
+     */
+    private $password;
+
+    /**
+    * @var string
+    *
+    * @Assert\NotBlank(message="veuillez saisir l'adresse email")
+    * @Assert\Email(message="ceci n'est pas une adresse email valide")
+    * @ORM\Column(name="email", type="string", length=254, unique=true, nullable=true)
+    */
+    private $email;
+
+    /**
+    * @var boolean
+    *
+    * @ORM\Column(name="is_active", type="boolean")
+    */
+    private $isActive;
+
+    /**
+    * @var array
+    *
+    * @ORM\Column(name="roles", type="array")
+    */
+    private $roles;
+
+    private $apikey;
+
+    public function __construct(){
+        $this->isActive = true;
+        $this->roles = array(self::DEFAULT_ROLE);
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId(){
+        return $this->id;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
+     *
+     * @return User
+     */
+    public function setUsername($username){
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get username
+     *
+     * @return string
+     */
+    public function getUsername(){
+        return $this->username;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     *
+     * @return User
+     */
+    public function setPassword($password){
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string
+     */
+    public function getPassword(){
+        return $this->password;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return User
+     */
+    public function setEmail($email){
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail(){
+        return $this->email;
+    }
+
+    /**
+     * Get is_active
+     *
+     * @return boolean
+     */
+    public function getIsActive(){
+        return $this->isActive;
+    }
+
+    /**
+    * @return null
+    */
+    public function getSalt(){
+        return null;
+    }
+
+
+    /**
+    * @return array
+    */
+    public function getRoles(){
+        return $this->roles;
+    }
+
+
+    /**
+     * Set email
+     *
+     * @param string $apikey
+     *
+     * @return User
+     */
+    public function setApikey($apikey){
+        $this->apikey = $apikey;
+        return $this;
+    }
+
+    /**
+     * Get apikey
+     *
+     * @return string
+     */
+    public function getApikey(){
+        return $this->apikey;
+    }
+
+    /**
+    *
+    */
+    public function eraseCredentials(){ }
+
+    /**
+    * @see \Serializable::serialize()
+    */
+    public function serialize(){
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+            //$this->salt
+        ));
+    }
+
+    /**
+    * @see \Serializable::unserialize()
+    */
+    public function unserialize($data){
+        list($this->id,$this->username,$this->password/*,$this->salt*/) = unserialize($data);
+    }
+
+    /**
+    * Set isActive
+    *
+    * @param boolean $isActive
+    *
+    * @return User
+    */
+    public function setIsActive($isActive){
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+    * Set roles
+    *
+    * @param array $roles
+    *
+    * @return User
+    */
+    public function setRoles($roles){
+        $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+    * @see EquatableInterface::isEqualTo()
+    */
+    public function isEqualTo(UserInterface $user){
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if ($this->password !== $user->getPassword()) {
+            return false;
+        }
+
+       /* if ($this->apikey !== $user->getApikey()) {
+            return false;
+        }*/
+
+        if ($this->username !== $user->getUsername()) {
+            return false;
+        }
+
+        if ($this->email !== $user->getEmail()) {
+            return false;
+        }
+
+        return true;
+    }
+
+}

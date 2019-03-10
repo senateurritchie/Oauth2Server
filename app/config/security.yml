@@ -1,0 +1,90 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+
+    encoders:
+
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+
+        app.apikey_user_provider:
+            id: app.apikey_user_provider.apikey
+
+        app.user_provider:
+            id: app.user_provider.username
+
+        api.user_provider:
+            id: app.api_token_user_provider
+
+        my_user_provider:
+            entity:
+                class: AppBundle:User
+                property: email
+
+        #in_memory:
+        #    memory: ~
+
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api:
+            pattern: ^/api/
+            stateless: true
+            provider: app.apikey_user_provider
+            simple_preauth:
+                authenticator: AppBundle\Security\ApiKeyAuthenticator
+
+        # api:
+        #     pattern: ^/api/
+        #     stateless: true
+        #     provider: api.user_provider
+        #     guard:
+        #         authenticators:
+        #             - AppBundle\Security\ApiTokenAuthenticator
+
+        main:
+            pattern:        ^/
+            anonymous:      ~
+            provider:       my_user_provider
+
+            form_login:
+                login_path: aaz_login
+                check_path: aaz_login
+                default_target_path: account_index
+                csrf_token_generator: security.csrf.token_manager
+                #success_handler: AppBundle\Security\AuthenticationSuccessListener
+
+            logout:
+                path:       aaz_logout
+                target:     /
+
+            switch_user:
+                provider:   ~
+                parameter:  _switch_user
+                role:       ROLE_ALLOWED_TO_SWITCH
+
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~
+
+    access_control:
+        - { path: ^/admin/users, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/account, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/aaz/logout, roles: IS_AUTHENTICATED_FULLY }
+
+    role_hierarchy:
+        ROLE_USER: ROLE_API_USER
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]

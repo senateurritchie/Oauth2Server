@@ -1,0 +1,305 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ApiUserAccessToken
+ *
+ * @ORM\Table(name="api_user_access_token")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ApiUserAccessTokenRepository")
+ */
+class ApiUserAccessToken implements AccessToken
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+    * @var AppBundle\Entity\Application
+    *
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Application")
+    * @ORM\JoinColumn(nullable=false, onDelete="cascade")
+    */
+    private $application;
+
+    /**
+    * @var AppBundle\Entity\User
+    *
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+    * @ORM\JoinColumn(nullable=false, onDelete="cascade")
+    */
+    private $user;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=64, unique=true)
+     */
+    private $token;
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="refresh_token", type="string", length=32, nullable=true)
+     */
+    private $refresh_token;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_token_revoke", type="boolean")
+     */
+    private $isTokenRevoke;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_refresh_token_revoke", type="boolean")
+     */
+    private $isRefreshTokenRevoke;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="grant_type", type="string",columnDefinition="ENUM('authorization_code', 'implicit','password','client_credentials','refresh_token')")
+     */
+    private $grant_type;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="expires", type="datetime")
+     */
+    private $expires;
+
+    public function __constructor(){
+        $this->isTokenRevoke = 0;
+        $this->isRefreskTokenRevoke = 0;
+    }
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set expires
+     *
+     * @param \DateTime $expires
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setExpires($expires)
+    {
+        $this->expires = $expires;
+
+        return $this;
+    }
+
+    /**
+     * Get expires
+     *
+     * @return \DateTime
+     */
+    public function getExpires()
+    {
+        return $this->expires;
+    }
+
+    /**
+     * Set application
+     *
+     * @param \AppBundle\Entity\Application $application
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setApplication(\AppBundle\Entity\Application $application)
+    {
+        $this->application = $application;
+
+        return $this;
+    }
+
+    /**
+     * Get application
+     *
+     * @return \AppBundle\Entity\Application
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser(){
+        return $this->user;
+    }
+
+    /**
+     * Set refreshToken
+     *
+     * @param string $refreshToken
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setRefreshToken($refreshToken){
+        $this->refresh_token = $refreshToken;
+        return $this;
+    }
+
+    /**
+     * Get refreshToken
+     *
+     * @return string
+     */
+    public function getRefreshToken(){
+        return $this->refresh_token;
+    }
+
+    /**
+     * Set isTokenRevoke
+     *
+     * @param boolean $isTokenRevoke
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setIsTokenRevoke($isTokenRevoke){
+        $this->isTokenRevoke = $isTokenRevoke;
+        return $this;
+    }
+
+    /**
+     * Get isTokenRevoke
+     *
+     * @return boolean
+     */
+    public function getIsTokenRevoke(){
+        return $this->isTokenRevoke;
+    }
+
+    /**
+     * Set isRefreshTokenRevoke
+     *
+     * @param boolean $isRefreshTokenRevoke
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setIsRefreshTokenRevoke($isRefreshTokenRevoke){
+        $this->isRefreshTokenRevoke = $isRefreshTokenRevoke;
+        return $this;
+    }
+
+    /**
+     * Get isRefreshTokenRevoke
+     *
+     * @return boolean
+     */
+    public function getIsRefreshTokenRevoke(){
+        return $this->isRefreshTokenRevoke;
+    }
+
+    /**
+     * Set grantType
+     *
+     * @param string $grantType
+     *
+     * @return ApiUserAccessToken
+     */
+    public function setGrantType($grantType)
+    {
+        $this->grant_type = $grantType;
+
+        return $this;
+    }
+
+    /**
+     * Get grantType
+     *
+     * @return string
+     */
+    public function getGrantType()
+    {
+        return $this->grant_type;
+    }
+}
